@@ -1,0 +1,7 @@
+HLL
+pyarrow
+duckdb
+smart_open
+tldextract
+
+flake8
