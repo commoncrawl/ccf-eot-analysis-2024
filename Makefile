@@ -20,8 +20,14 @@ accumulate-join:
 count:
 	python duckit.py 'select count (*) from eot2024'
 
+captures:
+	python duckit.py 'select sum(captures) from eot2024'
+
 tlds:
-	python duckit.py 'select url_host_tld, count (*) from eot2024 group by url_host_tld order by count(*) DESC' > tlds
+	python duckit.py 'select url_host_tld, sum(captures) from eot2024 group by url_host_tld order by sum(captures) DESC' > tlds
+
+tlds-captures:
+	python duckit.py 'select url_host_tld, sum(captures), sum(ccf_captures) from eot2024 group by url_host_tld order by sum(captures) DESC' > tlds-captures
 
 io:
 	python duckit.py "select * from eot2024 where url_host_tld = 'io' limit 10" > io
@@ -32,8 +38,14 @@ top-io:
 top-gov-federal:
 	python duckit.py "select url_host_name, captures, fed_csv_registered_domain from eot2024 where url_host_tld = 'gov' and fed_csv_registered_domain = 1 order by captures desc limit 20" > $@
 
+top-gov-federal-captures:
+	python duckit.py "select sum(captures) from eot2024 where url_host_tld = 'gov' and fed_csv_registered_domain = 1" > $@
+
 top-gov-nonfederal:
 	python duckit.py "select url_host_name, captures, fed_csv_registered_domain from eot2024 where url_host_tld = 'gov' and fed_csv_registered_domain = 0 order by captures desc limit 20" > $@
+
+top-gov-nonfederal-captures:
+	python duckit.py "select sum(captures) from eot2024 where url_host_tld = 'gov' and fed_csv_registered_domain = 0" > $@
 
 top-gov-robots-fetch-failed:
 	# empty? seems to never increment
@@ -50,13 +62,13 @@ debug2:
 	python duckit.py "select url_host_name, captures, ccf_captures, codes_network_failed, hcrank from eot2024 where url_host_tld = 'gov' and codes_network_failed > 0 order by hcrank desc"
 
 robots_codes:
-	python duckit.py "select robots_code, count(*) from eot2024 group by robots_code order by count(*) desc"
+	python duckit.py "select robots_code, count(*) from eot2024 group by robots_code order by count(*) desc" > $@
 
 robots_codes_gov:
-	python duckit.py "select robots_code, count(*) from eot2024 where url_host_tld = 'gov' group by robots_code order by count(*) desc"
+	python duckit.py "select robots_code, count(*) from eot2024 where url_host_tld = 'gov' group by robots_code order by count(*) desc" > $@
 
 robots_codes_gov_null:
-	python duckit.py "select robots_code, url_host_name from eot2024 where url_host_tld = 'gov' and robots_code is NULL order by hcrank desc"
+	python duckit.py "select robots_code, url_host_name from eot2024 where url_host_tld = 'gov' and robots_code is NULL order by hcrank desc" > $@
 
 robots_codes_gov_fishy:
-	python duckit.py "select robots_code, url_host_name from eot2024 where url_host_tld = 'gov' and contains(ARRAY ['403', '503', '429'], robots_code) order by hcrank desc"
+	python duckit.py "select robots_code, url_host_name from eot2024 where url_host_tld = 'gov' and contains(ARRAY ['403', '503', '429'], robots_code) order by hcrank desc" > $@
