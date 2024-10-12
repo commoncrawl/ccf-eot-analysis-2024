@@ -140,20 +140,21 @@ class Rows:
             'surt_host_name': surt_host_name,
             #'distinct_urls': HyperLogLog(p=4),  # 128 bytes
 
-            'captures': 0,
+            'captures': 0,  # includes 200s
             'codes_2xx': 0,
             'codes_3xx': 0,
             'codes_4xx': 0,
-            'codes_minus_4xx': 0,
             'codes_5xx': 0,
             'codes_666': 0,  # non-standard
             'codes_999': 0,  # non-standard
-            'codes_xxx': 0,  # 3 digit int but not a valid one
-            'codes_0': 0,  # "fetch never tried"
+            'codes_0': 0,  # "fetch never tried", 3219
+            'codes_other_minus': 0,  # 51k
+            'codes_xxx': 0,  # 3 digit int but not a valid one, 1
+
+            'codes_minus_4xx': 0,  # 0, but a bunch of robots_code are -404
             'codes_robots_disallowed': 0,  # XXX always zero?
             'codes_robots_fetch_failed': 0,  # XXX always zero?
             'codes_network_failed': 0,  # XXX always zero
-            'codes_other_minus': 0,
 
             'codes': defaultdict(int),
             'durations': defaultdict(int),
