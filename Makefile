@@ -2,17 +2,17 @@ get-csvs:
 	wget https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-federal.csv
 	wget https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-full.csv
 
-accumulate-test:
+accumulate-hosts-test:
 	# 86.90user 0.45system 1:23.99elapsed 104%CPU (0avgtext+0avgdata 240428maxresident)k
 	# in.gz 338MB, out.parquet 2MB
 	/bin/time python accumulate-hosts.py crawl803-crawl.log.gz
 
-accumulate-all:
+accumulate-hosts-all:
 	# 2143.37user 8.31system 35:48.70elapsed 100%CPU (0avgtext+0avgdata 922692maxresident)k
 	# in.gz 8.2GB, out.parquet 12MB
 	/bin/time python accumulate-hosts.py crawl*-crawl.log.gz
 
-accumulate-join:
+accumulate-hosts-join:
 	# 96.36user 3.49system 0:04.25elapsed 2348%CPU (0avgtext+0avgdata 1010000maxresident)k
 	# 12MB in, hostlevel is 6GB, 14 MB out
 	/bin/time python ./duck-left-join.py first_log_drop_00000.parquet /home/cc-pds/commoncrawl/cc-index/table/cc-main/hostlevel/crawl\=CC-MAIN-2024-33/CC-MAIN-2024-33-hostlevel.parquet eot2024_hostlevel_logs.parquet

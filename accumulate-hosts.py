@@ -128,7 +128,7 @@ def update_code(entry, code):
                 print(code, key)
 
 
-class Rows:
+class Hosts:
     def __init__(self, fname, fed_csv_registered_domains=set()):
         self.surt_host_names = {}
         self.fname = os.path.splitext(os.path.basename(fname))[0]
@@ -254,7 +254,7 @@ def main():
             fed_csv_registered_domains.add(row[0])
 
     for fname in sys.argv[1:]:
-        rows = Rows('first_log_drop_debug', fed_csv_registered_domains=fed_csv_registered_domains)
+        hosts = Hosts('first_log_drop_debug', fed_csv_registered_domains=fed_csv_registered_domains)
         with smart_open.open(fname) as fd:
             for line in fd:
                 # see logtrix CrawlLogIterator.java
@@ -288,8 +288,8 @@ def main():
                         #print(f'saw annotation tag {uri} {annotation}')
                         pass
 
-                rows.accumulate(uri, code, timestamp_duration)
-    rows.spill()
+                hosts.accumulate(uri, code, timestamp_duration)
+    hosts.spill()
 
 '''
 howto store a list in parquet
