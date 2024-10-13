@@ -5,12 +5,12 @@ get-csvs:
 accumulate-test:
 	# 86.90user 0.45system 1:23.99elapsed 104%CPU (0avgtext+0avgdata 240428maxresident)k
 	# in.gz 338MB, out.parquet 2MB
-	/bin/time python accumulate-rows.py crawl803-crawl.log.gz
+	/bin/time python accumulate-hosts.py crawl803-crawl.log.gz
 
 accumulate-all:
 	# 2143.37user 8.31system 35:48.70elapsed 100%CPU (0avgtext+0avgdata 922692maxresident)k
 	# in.gz 8.2GB, out.parquet 12MB
-	/bin/time python accumulate-rows.py crawl*-crawl.log.gz
+	/bin/time python accumulate-hosts.py crawl*-crawl.log.gz
 
 accumulate-join:
 	# 96.36user 3.49system 0:04.25elapsed 2348%CPU (0avgtext+0avgdata 1010000maxresident)k
