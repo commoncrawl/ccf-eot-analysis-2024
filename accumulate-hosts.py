@@ -52,6 +52,7 @@ def split_hostname(parts):
     tld = hostname.split('.')[-1]
 
     try:
+        # XXX this should be memoized, or at least the last one cached?
         tlde = tldextract.extract(hostname, include_psl_private_domains=False)
     except IndexError:
         # can be raised for punycoded hostnames
@@ -138,6 +139,16 @@ class Hosts:
     def init_host(self, surt_host_name, url_host_name, url_host_registered_domain, url_host_tld):
         self.surt_host_names[surt_host_name] = {
             'surt_host_name': surt_host_name,
+
+            'url_host_name': url_host_name,
+            'url_host_registered_domain': url_host_registered_domain,
+            'fed_csv_registered_domain': url_host_registered_domain in self.fed_csv_registered_domains,
+            'url_host_tld': url_host_tld,
+            'robots_code': None,
+            'robots_duration': None,
+
+            'codes': defaultdict(int),  # not currently written
+            'durations': defaultdict(int),  # not currently written
             #'distinct_urls': HyperLogLog(p=4),  # 128 bytes
 
             'captures': 0,  # includes 200s
@@ -155,16 +166,6 @@ class Hosts:
             'codes_robots_disallowed': 0,  # XXX always zero?
             'codes_robots_fetch_failed': 0,  # XXX always zero?
             'codes_network_failed': 0,  # XXX always zero
-
-            'codes': defaultdict(int),
-            'durations': defaultdict(int),
-            #'hcrank': None,  # will come from join
-            'url_host_name': url_host_name,
-            'url_host_registered_domain': url_host_registered_domain,
-            'url_host_tld': url_host_tld,
-            'robots_code': None,
-            'robots_duration': None,
-            'fed_csv_registered_domain': url_host_registered_domain in self.fed_csv_registered_domains,
         }
 
     def accumulate(self, uri, code, timestamp_duration):
@@ -211,6 +212,7 @@ class Hosts:
 
         # spill if the in-memory db is too big
         if len(self.surt_host_names) > 1_000_000:
+            raise ValueError('right now only a single spill per run is allowed')
             self.spill()
 
     def spill(self):

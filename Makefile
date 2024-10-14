@@ -1,4 +1,4 @@
-get-csvs:
+get-fed-csvs:
 	wget https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-federal.csv
 	wget https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-full.csv
 
@@ -16,6 +16,13 @@ accumulate-hosts-join:
 	# 96.36user 3.49system 0:04.25elapsed 2348%CPU (0avgtext+0avgdata 1010000maxresident)k
 	# 12MB in, hostlevel is 6GB, 14 MB out
 	/bin/time python ./duck-left-join.py first_log_drop_00000.parquet /home/cc-pds/commoncrawl/cc-index/table/cc-main/hostlevel/crawl\=CC-MAIN-2024-33/CC-MAIN-2024-33-hostlevel.parquet eot2024_hostlevel_logs.parquet
+	parquet-tools csv eot2024_hostlevel_logs.parquet > eot2024_hostlevel_logs.csv
+
+accumulate-domains:
+	/bin/time python accumulate-domains.py eot2024_hostlevel_logs.parquet
+	@echo no domains database to get ranks from
+	parquet-tools csv eot2024_domainlevel_logs.parquet > eot2024_domainlevel_logs.csv
+
 
 count:
 	python duckit.py 'select count (*) from eot2024'

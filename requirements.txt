@@ -3,5 +3,6 @@ pyarrow
 duckdb
 smart_open
 tldextract
+parquet-tools
 
 flake8
